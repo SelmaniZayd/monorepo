@@ -1,0 +1,34 @@
+name: CI
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+    paths-ignore:
+      - '**/README.md'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: nrwl/nx-set-shas@v3
+      - name: Get node_modules from cache or install
+        id: node-modules
+        uses: actions/cache@v3
+        env:
+          cache-name: node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-cache-${{ env.cache-name }}-
+      - name: Install Dependencies
+        if: steps.node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+      - run: git fetch --no-tags --prune --depth=1 origin master
+      - run: npx nx workspace-lint
+      - run: npx nx format:check
+      - run: npx nx affected --target=lint --parallel=3
+      - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
+      - run: npx nx affected --target=build --parallel=3
