@@ -29,6 +29,6 @@ jobs:
       - run: git fetch --no-tags --prune --depth=1 origin master
       - run: npx nx workspace-lint
       - run: npx nx format:check
-      - run: npx nx affected --target=lint --parallel=3
-      - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
-      - run: npx nx affected --target=build --parallel=3
+      - run: npx nx affected --target=lint --parallel=3 --base=origin/master
+      - run: npx nx affected --target=test --parallel=3 --ci --code-coverage --base=origin/master
+      - run: npx nx affected --target=build --parallel=3 --base=origin/master
