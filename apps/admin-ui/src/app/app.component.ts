@@ -9,5 +9,5 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'admin-ui v0';
+  title = 'admin-ui v0.1';
 }
