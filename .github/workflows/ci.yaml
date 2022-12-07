@@ -14,6 +14,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: 'master'
       - name: Get node_modules from cache or install
         id: node-modules
         uses: actions/cache@v3
@@ -29,6 +31,6 @@ jobs:
       - run: git fetch --no-tags --prune --depth=1 origin master
       - run: npx nx workspace-lint
       - run: npx nx format:check
-      - run: npx nx affected --target=lint --parallel=3 --base=origin/master
-      - run: npx nx affected --target=test --parallel=3 --ci --code-coverage --base=origin/master
-      - run: npx nx affected --target=build --parallel=3 --base=origin/master
+      - run: npx nx affected --target=lint --parallel=3
+      - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
+      - run: npx nx affected --target=build --parallel=3
