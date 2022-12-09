@@ -31,4 +31,3 @@ jobs:
         run: npm ci
       - run: git fetch --no-tags --prune --depth=1 origin master
       - run: npx nx deploy admin-ui --verbose
-
