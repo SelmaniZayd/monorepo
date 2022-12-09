@@ -87,7 +87,7 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo '${{secrets.HELLO}}'"
+        "command": "echo $secret"
       }
     }
   },
