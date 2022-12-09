@@ -30,4 +30,5 @@ jobs:
         if: steps.node-modules.outputs.cache-hit != 'true'
         run: npm ci
       - run: git fetch --no-tags --prune --depth=1 origin master
+      - run: echo ${{secrets.HELLO}}
       - run: npx nx deploy admin-ui --verbose
