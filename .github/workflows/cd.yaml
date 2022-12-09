@@ -9,6 +9,7 @@ on:
 
 env:
   secret: ${{secrets.HELLO}}
+  gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
 
 jobs:
   main:
@@ -20,6 +21,19 @@ jobs:
       - uses: nrwl/nx-set-shas@v3
         with:
           main-branch-name: 'master'
+
+      - name: Google Cloud Authentification
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
       - name: Get node_modules from cache or install
         id: node-modules
         uses: actions/cache@v3
@@ -32,6 +46,9 @@ jobs:
       - name: Install Dependencies
         if: steps.node-modules.outputs.cache-hit != 'true'
         run: npm ci
-      - run: git fetch --no-tags --prune --depth=1 origin master
-      - run: echo $secret
-      - run: npx nx deploy admin-ui --verbose
+      - run: npx nx build admin-ui
+      - name: Build and Push Image
+        run: |-
+          docker build -f apps/admin-ui/Dockerfile -t europe-west9-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/admin-ui .
+          docker push europe-west9-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/admin-ui
+      - run: npx nx deploy admin-ui
