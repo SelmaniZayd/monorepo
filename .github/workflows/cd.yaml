@@ -33,5 +33,5 @@ jobs:
       - run: npx nx deploy admin-ui
 
       - name: deploy stuff
-      - run: nx deploy admin-ui
+        run: nx deploy admin-ui
 
