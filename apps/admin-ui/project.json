@@ -87,7 +87,7 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "gcloud run deploy admin-ui --region europe-west9 --image europe-west9-docker.pkg.dev/$gcp_project_id/cloud-run-source-deploy/admin-ui --allow-unauthenticated --quiet"
+        "command": "gcloud run deploy admin-ui --region $region --image $artifact_registry_url/$gcp_project_id/cloud-run-source-deploy/admin-ui --project $gcp_project_id --allow-unauthenticated --quiet"
       }
     }
   },

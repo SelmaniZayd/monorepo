@@ -8,8 +8,9 @@ on:
       - '**/README.md'
 
 env:
-  secret: ${{secrets.HELLO}}
   gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+  region: ${{ secrets.GCP_REGION }}
+  artifact_registry_url: ${{ secrets.GCP_REGION }}-docker.pkg.dev
 
 jobs:
   main:
@@ -32,7 +33,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
 
       - name: Authorize Docker push
-        run: gcloud auth configure-docker
+        run: gcloud auth configure-docker $artifact_registry_url
 
       - name: Get node_modules from cache or install
         id: node-modules
@@ -49,6 +50,6 @@ jobs:
       - run: npx nx build admin-ui
       - name: Build and Push Image
         run: |-
-          docker build -f apps/admin-ui/Dockerfile -t europe-west9-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/admin-ui .
-          docker push europe-west9-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/admin-ui
+          docker build -f apps/admin-ui/Dockerfile -t $artifact_registry_url/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/admin-ui .
+          docker push $artifact_registry_url/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/admin-ui
       - run: npx nx deploy admin-ui
