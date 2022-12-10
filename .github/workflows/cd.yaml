@@ -1,9 +1,8 @@
 name: CD
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches: [master]
-    types: [opened, synchronize]
     paths-ignore:
       - '**/README.md'
 
@@ -19,22 +18,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: nrwl/nx-set-shas@v3
-        with:
-          main-branch-name: 'master'
-
+      # Setting up GCloud & Docker
       - name: Google Cloud Authentification
         id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
-
       - name: Authorize Docker push
         run: gcloud auth configure-docker $artifact_registry_url
-
+      # Fetching node modules from cache or installing them
       - name: Get node_modules from cache or install
         id: node-modules
         uses: actions/cache@v3
@@ -47,6 +41,10 @@ jobs:
       - name: Install Dependencies
         if: steps.node-modules.outputs.cache-hit != 'true'
         run: npm ci
+      # NX monorepo setup, testing building and deploying
+      - uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: 'master'
       - run: npx nx build admin-ui
       - name: Build and Push Image
         run: |-
