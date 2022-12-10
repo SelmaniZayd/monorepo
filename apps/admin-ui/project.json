@@ -87,7 +87,11 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "gcloud run deploy admin-ui --region $region --image $repository_url/admin-ui --project $gcp_project_id --min-instances 0 --max-instances 1 --memory 128Mi --allow-unauthenticated --quiet"
+        "commands": [
+          "docker build -f apps/admin-ui/Dockerfile -t $REPOSITORY_URL/admin-ui .",
+          "docker push $REPOSITORY_URL/admin-ui",
+          "gcloud run deploy admin-ui --region $REGION --image $REPOSITORY_URL/admin-ui --project $GCP_PROJECT_ID --min-instances 0 --max-instances 1 --memory 128Mi --allow-unauthenticated --quiet"
+        ]
       }
     }
   },
