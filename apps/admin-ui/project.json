@@ -92,7 +92,7 @@
           "docker push $REPOSITORY_URL/admin-ui",
           "gcloud run deploy admin-ui --region $REGION --image $REPOSITORY_URL/admin-ui --project $GCP_PROJECT_ID --min-instances 0 --max-instances 1 --memory 128Mi --allow-unauthenticated --quiet"
         ],
-        "parralel": false
+        "parallel": false
       }
     }
   },
