@@ -87,7 +87,7 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "gcloud run deploy admin-ui --region=$region --image=$repository_url/admin-ui --project=$gcp_project_id --min-instances=0 --max-instances=1 --memory=128Mi --allow-unauthenticated --quiet"
+        "command": "gcloud run deploy admin-ui --region $region --image $repository_url/admin-ui --project $gcp_project_id --min-instances 0 --max-instances 1 --memory 128Mi --allow-unauthenticated --quiet"
       }
     }
   },
