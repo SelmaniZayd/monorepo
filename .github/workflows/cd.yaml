@@ -9,7 +9,8 @@ on:
 env:
   gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
   region: ${{ secrets.GCP_REGION }}
-  repository_url: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}
+  artifact_registry_url: ${{ secrets.GCP_REGION }}-docker.pkg.dev
+  repository_url: $artifact_registry_url/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}
 
 jobs:
   main:
