@@ -10,7 +10,7 @@ env:
   gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
   region: ${{ secrets.GCP_REGION }}
   artifact_registry_url: ${{ secrets.GCP_REGION }}-docker.pkg.dev
-  repository_url: $artifact_registry_url/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}
+  repository_url: ${{env.artifact_registry_url}}/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}
 
 jobs:
   main:
@@ -28,7 +28,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
       - name: Authorize Docker push
-        run: gcloud auth configure-docker $artifact_registry_url
+        run: gcloud auth configure-docker ${{ env.artifact_registry_url }}
       # Fetching node modules from cache or installing them
       - name: Get node_modules from cache or install
         id: node-modules
@@ -49,6 +49,6 @@ jobs:
       - run: npx nx build admin-ui
       - name: Build and Push Image
         run: |-
-          docker build -f apps/admin-ui/Dockerfile -t $repository_url/admin-ui .
-          docker push $repository_url/admin-ui
+          docker build -f apps/admin-ui/Dockerfile -t ${{ env.repository_url }}/admin-ui .
+          docker push ${{ env.repository_url }}/admin-ui
       - run: npx nx deploy admin-ui
