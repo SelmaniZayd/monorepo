@@ -10,7 +10,7 @@ env:
   gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
   region: ${{ secrets.GCP_REGION }}
   artifact_registry_url: ${{ secrets.GCP_REGION }}-docker.pkg.dev
-  repository_url: ${{env.artifact_registry_url}}/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}
+  repository_url: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}
 
 jobs:
   main:
