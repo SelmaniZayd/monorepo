@@ -13,7 +13,8 @@
         "outputPath": "dist/apps/api",
         "main": "apps/api/src/main.ts",
         "tsConfig": "apps/api/tsconfig.app.json",
-        "assets": ["apps/api/src/assets"]
+        "assets": ["apps/api/src/assets"],
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {
@@ -53,6 +54,17 @@
       "options": {
         "jestConfig": "apps/api/jest.config.ts",
         "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "docker build -f apps/api/Dockerfile -t $REPOSITORY_URL/admin-api .",
+          "docker push $REPOSITORY_URL/admin-api",
+          "gcloud run deploy admin-api --region $REGION --image $REPOSITORY_URL/admin-api --project $GCP_PROJECT_ID --min-instances 0 --max-instances 1 --memory 128Mi --allow-unauthenticated --quiet"
+        ],
+        "parallel": false
       }
     }
   },
