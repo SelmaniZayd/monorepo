@@ -8,7 +8,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getData(@Req() req) {
+  getData(@Req() req: any) {
     const yourIp = requestIp.getClientIp(req);
     return {
       yourIp: yourIp,
