@@ -10,6 +10,11 @@ export class AppController {
   @Get()
   getData(@Req() req: any) {
     const yourIp = requestIp.getClientIp(req);
+    console.log({
+      yourIp: yourIp,
+      yourIp2: req.clientIp,
+      yourIp3: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+    });
     return {
       yourIp: yourIp,
       yourIp2: req.clientIp,
