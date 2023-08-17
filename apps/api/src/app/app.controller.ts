@@ -13,6 +13,7 @@ export class AppController {
     return {
       yourIp: yourIp,
       yourIp2: req.clientIp,
+      yourIp3: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
       data: this.appService.getData(),
     };
   }
