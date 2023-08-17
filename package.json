@@ -29,6 +29,7 @@
     "@nrwl/workspace": "15.4.2",
     "@types/jest": "28.1.1",
     "@types/node": "16.11.7",
+    "@types/request-ip": "^0.0.38",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "autoprefixer": "^10.4.0",
@@ -63,6 +64,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "reflect-metadata": "^0.1.13",
+    "request-ip": "^3.3.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
