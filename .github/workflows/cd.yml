@@ -1,0 +1,52 @@
+name: CD
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths-ignore:
+      - '**/README.md'
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: ${{ secrets.GCP_REGION }}
+  ARTIFACT_REGISTRY_URL: ${{ secrets.GCP_REGION }}-docker.pkg.dev
+  REPOSITORY_URL: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}
+  BEFORE_SHA: ${{ github.event.before }}
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      # Setting up GCloud & Docker
+      - name: Google Cloud Authentification
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker $ARTIFACT_REGISTRY_URL
+      # Fetching node modules from cache or installing them
+      - name: Get node_modules from cache or install
+        id: node-modules
+        uses: actions/cache@v3
+        env:
+          cache-name: node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-cache-${{ env.cache-name }}-
+      - name: Install Dependencies
+        if: steps.node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+      # NX monorepo setup, building and deploying
+      - uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: 'master'
+      - run: npx nx affected --target test --base $BEFORE_SHA  --parallel
+      - run: npx nx affected --target build --base $BEFORE_SHA  --parallel
+      - run: npx nx affected --target deploy --base $BEFORE_SHA  --parallel
