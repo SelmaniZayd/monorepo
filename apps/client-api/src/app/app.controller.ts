@@ -13,9 +13,13 @@ export class AppController {
   }
 
   @Post('call')
-  async call(@Body() data: {url_to_call: string}) {
-    return axios.get(data.url_to_call).catch((error) => {
+  async call(@Body() data: { url_to_call: string }) {
+    try {
+      const response = await axios.get(data.url_to_call);
+      return response.data;
+    } catch (error) {
       console.error(error);
-    });
+      return { error: error.message ?? 'An error occured' };
+    }
   }
 }
