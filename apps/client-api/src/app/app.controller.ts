@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import axios from 'axios';
+import * as requestIp from 'request-ip';
 import { AppService } from './app.service';
 
 @Controller()
@@ -13,10 +13,16 @@ export class AppController {
   }
 
   @Post('call')
-  async call(@Body() data: { url_to_call: string }) {
+  async call(@Body() data: { url_to_call: string }, @Req() req: any) {
     try {
       const response = await axios.get(data.url_to_call);
-      return response.data;
+      const yourIp = requestIp.getClientIp(req);
+      return {
+        yourIp: yourIp,
+        yourIp2: req.clientIp,
+        yourIp3: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        data: response.data,
+      };
     } catch (error) {
       console.error(error);
       return { error: error.message ?? 'An error occured' };
